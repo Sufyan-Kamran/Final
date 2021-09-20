@@ -216,10 +216,14 @@ def loginPage():
             enk.place(x=600,y=700)
             enk.insert(0,value[1])
             print(enk.get())
+            cur.execute("select BuyingRate from products where Pid=%s",(pid))
+            for cor in cur:
+                Buying=cor[0]
+            print(Buying)
             if b == "":
                 messagebox.showerror("Field Error"," All fields are required")
             else:
-                cur.execute("insert into ordr(Id,name,email,Pid,Pname,QTY,bill,Order_date) values(%s,%s,%s,%s,%s,%s,%s,%s)",(row[0],row[1],row[3],pid,enk.get(),b,c,formatted_date))
+                cur.execute("insert into ordr(Id,name,email,Pid,Pname,QTY,bill,Order_date,buyingRate) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)",(row[0],row[1],row[3],pid,enk.get(),b,c,formatted_date,Buying))
                 cur.execute("update products set QTY=%s where Pid=%s",(fqt,pi))
                 con.commit()
                 con.close
@@ -273,7 +277,8 @@ def loginPage():
             #grab record values
             global value 
             value = treeview4.item(selects,'values')        
-            if value[3] == dNames.get():
+            print(value[2])
+            if value[3] <= dNames.get():
                 messagebox.showerror("error","All fields are required !")
             else:
                 try:
@@ -282,16 +287,48 @@ def loginPage():
                     cur.execute("select * from ordr")
                     con.commit()
                     con.close
+                    Dids = Label(frame, text="",fg="red",font=("times new roman", 15))
+                    Dids.place(x=950,y=650)
+                    Dids["text"]=value[3]
                     DNa = Label(frame, text="",fg="red",font=("times new roman", 15))
                     DNa.place(x=950,y=700)
                     DNa["text"]=value[2]
+                    a = int(dNames.get())
+                    try:                       
+                        con = pymysql.connect(host="localhost", user="root", password="", database="employee" )
+                        cur = con.cursor()
+                        cur.execute("select * from products where Pname=%s",(value[2]))
+                        defrow = cur.fetchall()
+                        for r in defrow:
+                            #print(r[5])1
+                            if r[5] <= "":
+                                print(a)
+                                con = pymysql.connect(host="localhost", user="root", password="", database="employee" )
+                                cur = con.cursor()
+                                cur.execute("update products set Defected=%s where PName=%s",(a,value[2]))
+                                con.commit()
+                                con.close
+                                messagebox.showinfo("Defected Product", "Sorry for inconvenience. Thanks for your valuable feedback. It will help to make our services more better.")
+                                dNames.delete(0, END)
+                                DNa["text"] = ""
+                                Dids["text"] = ""
+                            else:
+                                #print(int(r[5]) + a)
+                                b = (int(r[5]) + a)
+                                
+                                con = pymysql.connect(host="localhost", user="root", password="", database="employee" )
+                                cur = con.cursor()
+                                cur.execute("update products set Defected=%s where PName=%s",(b,value[2]))
+                                con.commit()
+                                con.close
+                                messagebox.showinfo("Defected Product", "Sorry for inconvenience. Thanks for your valuable feedback. It will help to make our services more better.")
+                                dNames.delete(0, END)
+                                DNa["text"] = ""
+                                Dids["text"] = ""
+                    except Exception as e:
+                        messagebox.showinfo("Defected Product", e)
                 except:
-                    con = pymysql.connect(host="localhost", user="root", password="", database="employee" )
-                    cur = con.cursor()
-                    cur.execute("update products set Defected=%s where PName=%s",(dId.get(),dId.get(),value[2]))
-                    con.commit()
-                    con.close
-                    messagebox.showinfo("Defected Product", "Sorry for inconvenience. Thanks for your valuable feedback. It will help to make our services more better.")
+                    print(":ERROR")
         except Exception as e:
             messagebox.showerror("error", e)
 

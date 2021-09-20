@@ -33,7 +33,7 @@ Price_var =StringVar()
 Category_var =StringVar()
 Qty_var= StringVar()
 Defected_var = StringVar()
-def Report():    
+def data():    
     con10 = pymysql.connect(host="localhost", user="root", password="", database="employee" )
     cur11 = con10.cursor()
     cur11.execute("select * from products where Defected > 0 Limit 100000")
@@ -110,7 +110,9 @@ def Report():
     for ro2 in row2:
         c = ro2[5]
         b = ro2[6]
+        d = ro2[8]
         a = ro2[5]*ro2[8]
+        
         totals.append(b)
         profit.append(a)
         totalprofit.append(c)
@@ -118,15 +120,74 @@ def Report():
     item.append(sum(totalprofit))
     bc = sale[0]-sum(profit)
     totalpro.append(bc)
-    print(sum(totals))
-    print(sum(profit))
+    
     con2.commit()
     con2.close
+    
+    
+
+    from csv import DictWriter
+    field_names = ['Total Sale']
+    dict={'Total Sale':'This is computer generated report.'}
+    dict1={'Total Sale':f'Total sale is : Rs {sale[0]}'}
+    dict2={'Total Sale':f'Total Sold items quantity is : Rs {item[0]}'}
+    dict3={'Total Sale':f'Total profit of is : Rs {totalpro[0]}'}
+    dict4={'Total Sale':f'Total items quantity which are available in stock is : Rs {totalstock[0]}'}
+    dict5={'Total Sale':f'Total amount of all items which are currently available in stock is : Rs {PQTY[0]}'}
+    dict6={'Total Sale':f'Defected items total lose which worth is : Rs {ap[0]}'}
+    listToStr = ' , '.join([str(element) for element in Ditems ])  
+    dict7={'Total Sale':f'Defected items : {listToStr}'}
+    dict8 ={'Total Sale':f'Defected items : {totalDefected[0]}'}
+    with open('Report1.csv', 'w') as f_object:
+        dictwriter_object = DictWriter(f_object, fieldnames=field_names)
+        dictwriter_object.writerow(dict)
+        dictwriter_object.writerow(dict1)
+        dictwriter_object.writerow(dict2)
+        dictwriter_object.writerow(dict3)
+        dictwriter_object.writerow(dict4)
+        dictwriter_object.writerow(dict5)
+        dictwriter_object.writerow(dict6)
+        dictwriter_object.writerow(dict7)
+        dictwriter_object.writerow(dict8)
+        f_object.close()
     ac = {'Total Sale':sale,'Sale Item':item,'Total Profit': totalpro,'Total Stock':totalstock,'Stock Price ':PQTY ,'Defected Lose': ap,'Defected Items': Ditems,'Defected Worth': abc,'Total Defecteed QTY':totalDefected}
     df = pd.DataFrame.from_dict(ac, orient='index')
     df = df.transpose()
-    df.to_csv(r'Report.csv')
+    #df.to_csv(r'Report.csv')
+    df.to_csv('Report1.csv', mode='a', index=False, header=True)
     print(df)
+    print(listToStr)
+    
+    
+    from csv import DictWriter
+    ac = {'Total Sale':sale,'Sale Item':item,'Total Profit': totalpro,'Total Stock':totalstock,'Stock Price ':PQTY ,'Defected Lose': ap,'Defected Items': Ditems,'Defected Worth': abc,'Total Defecteed QTY':totalDefected}
+    df = pd.DataFrame.from_dict(ac, orient='index')
+    df = df.transpose()
+    #df.to_csv(r'Report.csv')
+    df.to_csv('Report2.csv', mode='w', index=False, header=True)
+    field_names = ['Total Sale']
+    dict={'Total Sale':'This is computer generated report.'}
+    dict1={'Total Sale':f'Total sale is : Rs {sale[0]}'}
+    dict2={'Total Sale':f'Total Sold items quantity is : Rs {item[0]}'}
+    dict3={'Total Sale':f'Total profit of is : Rs {totalpro[0]}'}
+    dict4={'Total Sale':f'Total items quantity which are available in stock is : Rs {totalstock[0]}'}
+    dict5={'Total Sale':f'Total amount of all items which are currently available in stock is : Rs {PQTY[0]}'}
+    dict6={'Total Sale':f'Defected items total lose which worth is : Rs {ap[0]}'}
+    listToStr = ' , '.join([str(element) for element in Ditems ])  
+    dict7={'Total Sale':f'Defected items : {listToStr}'}
+    dict8 ={'Total Sale':f'Defected items : {totalDefected[0]}'}
+    with open('Report2.csv', 'a') as f_object:
+        dictwriter_object = DictWriter(f_object, fieldnames=field_names)
+        dictwriter_object.writerow(dict)
+        dictwriter_object.writerow(dict1)
+        dictwriter_object.writerow(dict2)
+        dictwriter_object.writerow(dict3)
+        dictwriter_object.writerow(dict4)
+        dictwriter_object.writerow(dict5)
+        dictwriter_object.writerow(dict6)
+        dictwriter_object.writerow(dict7)
+        dictwriter_object.writerow(dict8)
+        f_object.close()
 def searchs():
     con = pymysql.connect(host="localhost", user="root", password="", database="sufyan" )
     cur = con.cursor()
@@ -290,18 +351,17 @@ def orderupdate():
     con = pymysql.connect(host="localhost", user="root", password="", database="employee" )
     cur = con.cursor()
     
-    cur.execute("update employees set fname=%s,lname=%s,email=%s,passwrd=%s,occupation=%s where id=%s",(fname_var.get(),lname_var.get(),email_var.get(),passw_var.get(),occup_var.get(),id_var.get()))
+    cur.execute("update ordr set Pname=%s,QTY=%s,bill=%s where name=%s",(ORDRE.get(),QTTY.get(),bill.get(),name.get()))
     con.commit()
     con.close()    
     messagebox.showinfo("Record Updated", "Record updated successfully")
     
-    ent1.delete(0,END)
-    ent2.delete(0,END)
-    ent3.delete(0,END)
-    ent4.delete(0,END)
-    ent5.delete(0,END)
-    ent6.delete(0,END)
-
+    lent1.delete(0,END)
+    name.delete(0,END)
+    email.delete(0,END)
+    ORDRE.delete(0,END)
+    QTTY.delete(0,END)
+    bill.delete(0,END)
 
 def updateprd():
     
@@ -359,18 +419,17 @@ def orderdelt():
     con = pymysql.connect(host="localhost", user="root", password="", database="employee" )
     cur = con.cursor()
     
-    cur.execute("delete from employees where id=%s",(id_var.get()))
+    cur.execute("delete from employees where id=%s",(lent1.get()))
     
     con.commit()
     con.close()    
     messagebox.showinfo("Record Deleted", "Record deleted successfully")
-    ent1.delete(0,END)
-    ent2.delete(0,END)
-    ent3.delete(0,END)
-    ent4.delete(0,END)
-    ent5.delete(0,END)
-    ent6.delete(0,END)
-
+    lent1.delete(0,END)
+    name.delete(0,END)
+    email.delete(0,END)
+    ORDRE.delete(0,END)
+    QTTY.delete(0,END)
+    bill.delete(0,END)
 
 
 def TAB():
@@ -566,7 +625,7 @@ ent6.place(x=120,y=760,height=30)
 
 ReportL = Label(root, text= "Report", bg="green", font=("times new roman",15,"bold"))
 ReportL.place(x=870,y=520)
-Rbtn = Button(root, text="Report",bg="red",fg="white", command=Report)
+Rbtn = Button(root, text="Report",bg="red",fg="white", command=data)
 Rbtn.place(x=1280,y=540,width=70)
 global Date1
 Date1L = Label(root, text="DATE 1: ", font=("times new roman",15),fg="blue")

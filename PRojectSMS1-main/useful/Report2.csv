@@ -1,0 +1,14 @@
+Total Sale,Sale Item,Total Profit,Total Stock,Stock Price ,Defected Lose,Defected Items,Defected Worth,Total Defecteed QTY
+2790,46,456,2871,132510,1120,pencil,30,17
+,,,,,,dollar pen,110,
+,,,,,,piano pen,900,
+,,,,,,dollar highliter,80,
+This is computer generated report.
+Total sale is : Rs 2790
+Total Sold items quantity is : Rs 46
+Total profit of is : Rs 456
+Total items quantity which are available in stock is : Rs 2871
+Total amount of all items which are currently available in stock is : Rs 132510
+Defected items total lose which worth is : Rs 1120
+"Defected items : pencil , dollar pen , piano pen , dollar highliter"
+Defected items : 17

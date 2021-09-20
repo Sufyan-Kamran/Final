@@ -234,7 +234,7 @@ def loginPage():
                     asaa = ppid1[7]
                     print(ppid1[7])
 
-                cur.execute("insert into orders(Id,name,email,Pid,Pname,QTY,bill,Order_date,Buying_Rate) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)",(row[0],row[1],row[3],pid,enk.get(),b,ca,formatted_date,asaa))
+                cur.execute("insert into ordr(Id,name,email,Pid,Pname,QTY,bill,Order_date,Buying_Rate) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)",(row[0],row[1],row[3],pid,enk.get(),b,ca,formatted_date,asaa))
                 cur.execute("update products set QTY=%s where Pid=%s",(fqt,pi))
                 con.commit()
                 con.close
@@ -303,7 +303,7 @@ def loginPage():
                 try:
                     con = pymysql.connect(host="localhost", user="root", password="", database="employee" )
                     cur = con.cursor()
-                    cur.execute("select * from orders")
+                    cur.execute("select * from ordr")
                     con.commit()
                     con.close
                     Dids = Label(frame, text="",fg="red",font=("times new roman", 15))
@@ -392,7 +392,7 @@ def loginPage():
         ItemsL.place(x=670,y=80)
         con5 = pymysql.connect(host="localhost", user="root", password="", database="employee" )
         cur5 = con5.cursor()
-        cur5.execute("select * from orders where name=%s and email=%s",(row[1],row[3]))
+        cur5.execute("select * from ordr where name=%s and email=%s",(row[1],row[3]))
         row5 = cur5.fetchall()
         treeview4 =ttk.Treeview(frame,height=700)
         treeview4["columns"]= ("Id","Name","Product","Qty","Bill","Date")
@@ -466,7 +466,7 @@ def loginPage():
     Btsnrefresh.place(x=750,y=550,width=70)
     con7 = pymysql.connect(host="localhost", user="root", password="", database="employee" )
     cur7 = con7.cursor()
-    cur7.execute("select * from orders ")
+    cur7.execute("select * from ordr ")
     cs = cur7.fetchall()
     con7.commit()
     con7.close()    
